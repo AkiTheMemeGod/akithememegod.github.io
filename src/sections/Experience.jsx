@@ -9,21 +9,21 @@ const experiences = [
     {
         role: 'Full-Stack Developer',
         company: 'CheckPoint Systems',
-        period: 'Feb 2025 – Jul 2025',
+        period: 'Feb 2025 - Jul 2025',
         description: 'Engineering the backbone of real-time systems. Optimized critical API infrastructure for speed and reliability.',
         theme: 'blue'
     },
     {
         role: 'Open Source Contributor',
-        company: 'GitHub / PyPI',
-        period: '2023 - Present',
+        company: 'GitHub / PyPI / Npm / Dart',
+        period: '2024 - Present',
         description: 'Contributing to the global developer commons. Building public utilities that empower the community.',
         theme: 'emerald'
     },
     {
         role: 'Freelance Developer',
         company: 'Self-Employed',
-        period: '2022 - Present',
+        period: '2023 - Present',
         description: 'Transforming client visions into secure, scalable digital architectures. Consulting on security and performant stack design.',
         theme: 'purple'
     }
