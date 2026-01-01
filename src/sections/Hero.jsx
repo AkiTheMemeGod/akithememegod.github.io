@@ -153,7 +153,7 @@ export function Hero() {
             <div ref={scrollRef} className="absolute bottom-12 left-12 flex items-center gap-4 opacity-0 z-20">
                 <div className="h-[1px] w-12 bg-gradient-to-r from-white to-transparent" />
                 <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/30 animate-pulse">
-                    Initialize Sequence
+                    Instead of staring at my face, scroll down.
                 </span>
             </div>
 
