@@ -1,5 +1,5 @@
 import React from 'react';
-import { Home, User, Code, FolderGit2, History, Mail } from 'lucide-react';
+import { Home, User, Code, FolderGit2, History, Mail, FileText } from 'lucide-react';
 import clsx from 'clsx';
 
 const navItems = [
@@ -8,6 +8,7 @@ const navItems = [
     { name: 'Skills', icon: Code, href: '#skills' },
     { name: 'Work', icon: FolderGit2, href: '#work' },
     { name: 'Journey', icon: History, href: '#experience' },
+    { name: 'Resume', icon: FileText, href: '/resume.pdf', external: true },
     { name: 'Contact', icon: Mail, href: '#contact' },
 ];
 
@@ -20,6 +21,8 @@ export function Navbar() {
                     <a
                         key={item.name}
                         href={item.href}
+                        target={item.external ? "_blank" : undefined}
+                        rel={item.external ? "noopener noreferrer" : undefined}
                         className={clsx(
                             "relative group flex flex-col items-center justify-center w-12 h-12 rounded-xl transition-all duration-300 ease-out",
                             "hover:w-16 hover:h-16 hover:-translate-y-4",
