@@ -1,14 +1,14 @@
 import React, { useEffect } from 'react';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import Lenis from 'lenis';
 import { Navbar } from './components/layout/Navbar';
-import { Hero } from './sections/Hero';
-import { About } from './sections/About';
-import { Skills } from './sections/Skills';
-import { Projects } from './sections/Projects';
-import { Experience } from './sections/Experience';
-import { Contact } from './sections/Contact';
+import { Home } from './pages/Home';
+import { BlogIndex } from './pages/BlogIndex';
+import { BlogPost } from './pages/BlogPost';
 
 function App() {
+  const location = useLocation();
+
   useEffect(() => {
     const lenis = new Lenis({
       duration: 1.2,
@@ -33,21 +33,24 @@ function App() {
     };
   }, []);
 
+  // Scroll to top on route change (unless hash is present)
+  useEffect(() => {
+    if (!location.hash) {
+      window.scrollTo(0, 0);
+    }
+  }, [location.pathname, location.hash]);
+
   return (
     <div className="relative min-h-screen bg-black text-white selection:bg-white/20 selection:text-white">
       <Navbar />
 
-      <main className="relative z-10 w-full bg-black">
-        <Hero />
-        <About />
-        <Skills />
-        <Projects />
-        <Experience />
-        <Contact />
+      <main className="relative z-10 w-full">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/blog" element={<BlogIndex />} />
+          <Route path="/blog/:slug" element={<BlogPost />} />
+        </Routes>
       </main>
-
-      {/* Background Elements (Parallax) can go here */}
-      <div className="fixed inset-0 z-0 bg-gradient-to-b from-black via-zinc-900 to-black pointer-events-none opacity-50" />
     </div>
   );
 }

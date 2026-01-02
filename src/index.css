@@ -5,18 +5,45 @@
 :root {
   --glass-border: rgba(255, 255, 255, 0.2);
   --glass-shine: rgba(255, 255, 255, 0.1);
+
+  /* 
+     CUSTOM CURSOR CONFIGURATION
+     Using local .cur files from the public directory.
+  */
+  --cursor-default: url('/normal.cur'), auto;
+
+  --cursor-hover: url('/hover.cur'), pointer;
 }
 
 @layer base {
   html {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    scroll-behavior: smooth; /* Fallback */
+    scroll-behavior: smooth;
+    /* Fallback */
   }
 
   body {
     @apply bg-black text-white overflow-x-hidden;
-    /* Custom cursor if needed */
+
+    /* Default Cursor */
+    @media (pointer: fine) {
+      cursor: var(--cursor-default);
+    }
+  }
+
+  /* Hover State for Interactive Elements */
+  @media (pointer: fine) {
+
+    a,
+    button,
+    input,
+    textarea,
+    select,
+    .interactive,
+    [role="button"] {
+      cursor: var(--cursor-hover);
+    }
   }
 }
 
@@ -24,7 +51,7 @@
   .glass {
     @apply bg-glass-100 backdrop-blur-xl border border-glass-200 shadow-lg;
   }
-  
+
   .glass-card {
     background: rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(20px);
@@ -39,7 +66,8 @@
 }
 
 /* Lenis Recommended CSS */
-html.lenis, html.lenis body {
+html.lenis,
+html.lenis body {
   height: auto;
 }
 
