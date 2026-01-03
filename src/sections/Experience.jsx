@@ -7,7 +7,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 const experiences = [
     {
-        role: 'Full-Stack Developer',
+        role: 'Project Intern',
         company: 'CheckPoint Systems',
         period: 'Feb 2025 - Jul 2025',
         description: 'Engineering the backbone of real-time systems. Optimized critical API infrastructure for speed and reliability.',
