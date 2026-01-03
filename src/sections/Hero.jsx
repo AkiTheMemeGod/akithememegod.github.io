@@ -36,7 +36,7 @@ export function Hero() {
 
             // Content Reveal (Slide from Left)
             tl.fromTo(contentRef.current.children,
-                { x: -50, opacity: 0 },
+                { x: 50, opacity: 0 },
                 { x: 0, opacity: 1, duration: 1, stagger: 0.1, ease: 'power3.out' },
                 "-=1.5"
             );
@@ -85,30 +85,30 @@ export function Hero() {
                 <div className="absolute inset-0 opacity-20 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] mix-blend-overlay" />
             </div>
 
-            {/* Content Side (Left) */}
-            <div ref={contentRef} className="relative z-20 flex flex-col items-start max-w-4xl pt-20">
+            {/* Content Side (Right) - Now aligned to right */}
+            <div ref={contentRef} className="relative z-20 flex flex-col items-end max-w-4xl pt-20 ml-auto text-right">
 
                 {/* The Name - Massive Professional UI Intent (Static Gradient) */}
-                <div className="relative z-10 -ml-2 md:-ml-4 select-none">
+                <div className="relative z-10 -mr-2 md:-mr-4 select-none">
                     <h1 className="text-[10rem] md:text-[14rem] lg:text-[16rem] leading-[0.8] font-bold tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white via-neutral-200 to-neutral-600">
                         Akash K.
                     </h1>
                 </div>
 
                 {/* The Headline */}
-                <div className="mt-8 md:mt-10 space-y-6 pl-2 md:pl-4 border-l-2 border-red-500/50">
+                <div className="mt-8 md:mt-10 space-y-6 pr-2 md:pr-4 border-r-2 border-red-500/50">
                     <div className="space-y-4">
                         <p className="text-2xl md:text-3xl font-mono font-medium text-red-400 tracking-wide">
                             I SPEAK FLUENT MACHINE.
                         </p>
-                        <p className="text-neutral-500 text-sm md:text-base max-w-md font-light tracking-wider uppercase leading-relaxed">
+                        <p className="text-neutral-500 text-sm md:text-base max-w-md font-light tracking-wider uppercase leading-relaxed ml-auto">
                             Turning caffeine into compiled code <br />
                             and chaos into order.
                         </p>
                     </div>
 
                     {/* Social Links */}
-                    <div className="flex items-center gap-6 pt-2">
+                    <div className="flex items-center justify-end gap-6 pt-2">
                         <a
                             href="https://github.com/AkiTheMemeGod"
                             target="_blank"
@@ -132,27 +132,27 @@ export function Hero() {
 
             </div>
 
-            {/* Image Side (Right) - Absolute on desktop to span height */}
-            <div className="absolute top-0 right-0 h-full w-full md:w-1/2 z-10 pointer-events-none mix-blend-screen">
+            {/* Image Side (Left) - Absolute on desktop to span height */}
+            <div className="absolute top-0 left-0 h-full w-full md:w-1/2 z-10 pointer-events-none mix-blend-screen">
                 <div ref={imageRef} className="relative w-full h-full" style={{ filter: 'url(#disintegration) grayscale(100%)' }}>
                     {/* The Image */}
                     <img
                         src="/me.png"
                         alt="Akash K"
-                        className="w-full h-full object-cover object-[center_top] md:object-[left_center]"
+                        className="w-full h-full object-cover object-[center_top] md:object-[right_center]"
                     />
 
                     {/* Gradient Masks for blending */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-black via-transparent to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-l from-black via-transparent to-transparent" />
                     <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
                     <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-transparent opacity-50" />
                 </div>
             </div>
 
-            {/* Scroll Indicator */}
-            <div ref={scrollRef} className="absolute bottom-12 left-12 flex items-center gap-4 opacity-0 z-20">
-                <div className="h-[1px] w-12 bg-gradient-to-r from-white to-transparent" />
-                <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/30 animate-pulse">
+            {/* Scroll Indicator - Moved to Right */}
+            <div ref={scrollRef} className="absolute bottom-12 right-12 flex items-center gap-4 opacity-0 z-20 flex-row-reverse">
+                <div className="h-[1px] w-12 bg-gradient-to-l from-white to-transparent" />
+                <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/30 animate-pulse text-right">
                     Instead of staring at my face, scroll down.
                 </span>
             </div>
