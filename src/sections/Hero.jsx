@@ -90,7 +90,7 @@ export function Hero() {
 
                 {/* The Name - Massive Professional UI Intent (Static Gradient) */}
                 <div className="relative z-10 -mr-2 md:-mr-4 select-none">
-                    <h1 className="text-[10rem] md:text-[14rem] lg:text-[16rem] leading-[0.8] font-bold tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white via-neutral-200 to-neutral-600">
+                    <h1 className="text-[5rem] sm:text-[8rem] md:text-[14rem] lg:text-[16rem] leading-[0.8] font-bold tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white via-neutral-200 to-neutral-600">
                         Akash K.
                     </h1>
                 </div>
@@ -98,7 +98,7 @@ export function Hero() {
                 {/* The Headline */}
                 <div className="mt-8 md:mt-10 space-y-6 pr-2 md:pr-4 border-r-2 border-red-500/50">
                     <div className="space-y-4">
-                        <p className="text-2xl md:text-3xl font-mono font-medium text-red-400 tracking-wide">
+                        <p className="text-xl md:text-3xl font-mono font-medium text-red-400 tracking-wide">
                             I SPEAK FLUENT MACHINE.
                         </p>
                         <p className="text-neutral-500 text-sm md:text-base max-w-md font-light tracking-wider uppercase leading-relaxed ml-auto">
@@ -139,10 +139,10 @@ export function Hero() {
                     <img
                         src="/me.png"
                         alt="Akash K"
-                        className="w-full h-full object-cover object-[center_top] md:object-[right_center]"
+                        className="w-full h-full object-cover object-center md:object-[right_center]"
                     />
 
-                    {/* Gradient Masks for blending */}
+                    {/* Gradient Masks for blending - Optimized for Visibility */}
                     <div className="absolute inset-0 bg-gradient-to-l from-black via-transparent to-transparent" />
                     <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
                     <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-transparent opacity-50" />

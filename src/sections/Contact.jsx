@@ -24,7 +24,7 @@ export function Contact() {
             <div className="w-full max-w-4xl">
                 {/* Header - TechnoBlade Tribute */}
                 <div className="mb-20 text-center space-y-6">
-                    <h2 className="text-6xl md:text-8xl font-bold tracking-tighter text-transparent bg-clip-text bg-gradient-to-br from-white via-white to-white/30 pb-4">
+                    <h2 className="text-6xl md:text-8xl font-bold tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white via-white to-white/50 pb-4 drop-shadow-[0_0_30px_rgba(255,255,255,0.3)]">
                         Gimme a call? Maybe not. Let's stick to online.
                     </h2>
                     <p className="text-neutral-500 text-lg md:text-xl font-light tracking-wide max-w-2xl mx-auto">
