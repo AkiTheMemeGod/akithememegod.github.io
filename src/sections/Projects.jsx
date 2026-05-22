@@ -1,117 +1,86 @@
-import React, { useRef, useLayoutEffect } from 'react';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { ArrowUpRight } from 'lucide-react';
-
-gsap.registerPlugin(ScrollTrigger);
+import React, { useRef } from 'react';
+import { motion, useScroll, useTransform } from 'framer-motion';
+import { ArrowUpRight, Cpu, Shield, Brain, Database } from 'lucide-react';
 
 const projects = [
     {
         title: 'RelayMail',
         category: 'Infrastructure',
-        description: 'High-performance, reliable email delivery service designed as a drop-in replacement for legacy SMTP. Features real-time analytics, webhook events, and 99.99% uptime SLA.',
-        tags: ['Python', 'Flask', 'SQLAlchemy'],
-        gradient: 'from-pink-500 to-rose-500',
-        accent: 'pink-500',
-        hoverBorder: 'group-hover:border-pink-500/50',
+        icon: Cpu,
+        description: 'High-performance SMTP routing service. Designed with parallelized mail delivery pipelines, webhook event triggers, and sub-millisecond dispatch queues to serve as a reliable drop-in replacement for legacy mailing engines.',
+        tags: ['Python', 'Flask', 'SQLAlchemy', 'SMTP'],
+        color: 'from-red-500/10 via-zinc-950 to-zinc-950',
+        accent: 'text-red-400',
+        border: 'hover:border-red-500/25',
         link: 'https://relaymail.pythonanywhere.com',
     },
     {
         title: 'AnarchKey',
         category: 'Security',
-        description: 'Military-grade encrypted cloud API key manager. Securely stores, rotates, and manages developer secrets with zero-knowledge architecture.',
-        tags: ['Node.js', 'Express.js', 'RelayMail', 'MongoDB', 'Cache'],
-        gradient: 'from-orange-500 to-red-500',
-        accent: 'orange-500',
-        hoverBorder: 'group-hover:border-orange-500/50',
+        icon: Shield,
+        description: 'Zero-knowledge credentials vault and API key controller. Securely stores, encrypts, and auto-rotates developer secrets using verified cryptographic hashing and decentralized key distribution nodes.',
+        tags: ['Node.js', 'Express.js', 'RelayMail', 'MongoDB', 'Redis'],
+        color: 'from-cyan-500/10 via-zinc-950 to-zinc-950',
+        accent: 'text-cyan-400',
+        border: 'hover:border-cyan-500/25',
         link: 'https://anarchkey.vercel.app',
     },
     {
         title: 'MindVault',
         category: 'AI Platform',
-        description: 'Personalized learning path generator using LLMs. Features automated content synthesis, progress tracking, and adaptive quizzes.',
-        tags: ['Node.js', 'MongoDB', 'Ollama', 'express.js'],
-        gradient: 'from-purple-500 to-blue-500',
-        accent: 'purple-500',
-        hoverBorder: 'group-hover:border-purple-500/50',
+        icon: Brain,
+        description: 'Local LLM cognitive mapping tool and knowledge synthesizer. Automatically index document sets, parse context arrays, and construct interactive learning node trees via local Ollama deployments.',
+        tags: ['Node.js', 'MongoDB', 'Ollama', 'Express.js'],
+        color: 'from-purple-500/10 via-zinc-950 to-zinc-950',
+        accent: 'text-purple-400',
+        border: 'hover:border-purple-500/25',
         link: 'https://github.com/AkiTheMemeGod/MindVault',
     },
     {
         title: 'ProtoBase',
         category: 'DevTools',
-        description: 'Backend-as-a-Service that automates database provisioning and API endpoint generation, reducing setup time by 50%.',
-        tags: ['Python', 'Flask', 'SQL', 'HTML', 'CSS', 'JS'],
-        gradient: 'from-emerald-500 to-teal-500',
-        accent: 'emerald-500',
-        hoverBorder: 'group-hover:border-emerald-500/50',
+        icon: Database,
+        description: 'Declarative database schema designer and mocking server. Dynamically provisions sandboxed SQLite schemas, generates mock JSON models, and builds standardized REST endpoints with OpenAPI spec sync.',
+        tags: ['Python', 'Flask', 'SQL', 'JavaScript', 'Tailwind'],
+        color: 'from-emerald-500/10 via-zinc-950 to-zinc-950',
+        accent: 'text-emerald-400',
+        border: 'hover:border-emerald-500/25',
         link: 'https://protobase.pythonanywhere.com',
     }
 ];
 
 export function Projects() {
-    const sectionRef = useRef(null);
     const containerRef = useRef(null);
-    const titleRef = useRef(null);
-
-    useLayoutEffect(() => {
-        const ctx = gsap.context(() => {
-            const cards = gsap.utils.toArray('.project-card');
-
-            // Allow vertical scrolling to scrub through the cards
-            // Pin the section for the duration of the scroll
-            const tl = gsap.timeline({
-                scrollTrigger: {
-                    trigger: sectionRef.current,
-                    pin: true,
-                    start: "top top",
-                    end: `+=${projects.length * 100}%`, // Scroll distance proportional to items
-                    scrub: 1,
-                }
-            });
-
-            // Animate cards sliding in from the right
-            cards.forEach((card, index) => {
-                if (index > 0) { // First card is already visible
-                    tl.fromTo(card,
-                        { xPercent: 100, x: 100, opacity: 0 },
-                        { xPercent: 0, x: 0, opacity: 1, duration: 1, ease: "power2.out" } // Slightly overlapping or sequential
-                    );
-                }
-            });
-
-        }, sectionRef);
-
-        return () => ctx.revert();
-    }, []);
 
     return (
-        <section ref={sectionRef} id="work" className="relative h-screen w-full bg-black overflow-hidden flex flex-col justify-center items-center">
-
+        <section 
+            id="work" 
+            ref={containerRef} 
+            className="relative min-h-screen w-full bg-black px-6 md:px-20 py-32 flex flex-col items-center"
+        >
             {/* Background Ambience */}
-            <div className="absolute inset-0 pointer-events-none">
-                <div className="absolute inset-0 opacity-20 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] mix-blend-overlay" />
+            <div className="absolute inset-0 pointer-events-none z-0">
+                <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-black" />
             </div>
 
-            {/* Sticky Header */}
-            <div ref={titleRef} className="absolute top-12 z-50 text-center w-full">
-                <h2 className="text-4xl md:text-5xl font-bold tracking-tighter text-white">
-                    Selected Works
+            {/* Section Header */}
+            <div className="z-10 text-center mb-24">
+                <span className="font-mono text-xs uppercase tracking-[0.25em] text-red-500">
+                    [ PORTFOLIO WORKS ]
+                </span>
+                <h2 className="text-4xl md:text-6xl font-bold tracking-tight text-white mt-2">
+                    SELECTED PROJECTS
                 </h2>
-                <p className="text-white/60 text-sm tracking-widest uppercase mt-2 font-medium drop-shadow-[0_0_5px_rgba(255,255,255,0.3)]">
-                    Engineering & Design
-                </p>
             </div>
 
-            {/* Card Container */}
-            <div ref={containerRef} className="relative w-full max-w-7xl h-[600px] flex items-center justify-center px-6">
+            {/* Stacking Card List */}
+            <div className="relative w-full max-w-5xl flex flex-col items-center z-10">
                 {projects.map((project, index) => (
-                    <div
-                        key={index}
-                        className="project-card absolute top-0 left-0 w-full h-full flex items-center justify-center px-4 md:px-0"
-                        style={{ zIndex: index + 1 }} // Ensure proper stacking order
-                    >
-                        <ProjectCard project={project} index={index} />
-                    </div>
+                    <ProjectCard 
+                        key={project.title} 
+                        project={project} 
+                        index={index} 
+                    />
                 ))}
             </div>
 
@@ -121,118 +90,76 @@ export function Projects() {
 
 function ProjectCard({ project, index }) {
     const cardRef = useRef(null);
-    const glowRef = useRef(null);
 
-    const handleMouseMove = (e) => {
-        if (!cardRef.current || !glowRef.current) return;
+    // Track scroll progress of this specific card to apply stack animation
+    const { scrollYProgress } = useScroll({
+        target: cardRef,
+        offset: ["start start", "end start"]
+    });
 
-        const rect = cardRef.current.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-
-        // Spotlight Glow
-        glowRef.current.style.background = `radial-gradient(circle at ${x}px ${y}px, rgba(255,255,255,0.15), transparent 80%)`;
-    };
-
-    const handleMouseLeave = () => {
-        if (glowRef.current) {
-            glowRef.current.style.background = `radial-gradient(circle at 50% 50%, rgba(255,255,255,0), transparent 100%)`;
-        }
-    };
+    // Map scroll progress to scale, opacity, and positioning shifts
+    const scale = useTransform(scrollYProgress, [0, 1], [1, 0.94]);
+    const opacity = useTransform(scrollYProgress, [0, 0.8], [1, 0.55]);
 
     return (
-        <div
-            ref={cardRef}
-            onMouseMove={handleMouseMove}
-            onMouseLeave={handleMouseLeave}
-            className={`relative w-full max-w-6xl h-[500px] md:h-[600px] rounded-3xl bg-[#0a0a0a] border border-white/10 overflow-hidden transition-all duration-500 shadow-2xl ${project.hoverBorder}`}
+        <div 
+            ref={cardRef} 
+            className="sticky top-28 md:top-36 w-full max-w-5xl h-[460px] md:h-[520px] mb-20 md:mb-32"
         >
-            {/* Spotlight Glow Layer */}
-            <div
-                ref={glowRef}
-                className="absolute inset-0 pointer-events-none z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 mix-blend-overlay"
-            />
+            <motion.div
+                style={{ scale, opacity }}
+                className={`relative w-full h-full rounded-2xl bg-zinc-950/80 border border-white/5 overflow-hidden transition-all duration-300 ${project.border} p-8 md:p-12 flex flex-col justify-between shadow-[0_20px_50px_rgba(0,0,0,0.6)]`}
+            >
+                {/* Tech Grid & Subtle Gradient Background */}
+                <div className="absolute inset-0 bg-grid opacity-[0.12] pointer-events-none" />
+                <div className={`absolute inset-0 bg-gradient-to-br ${project.color} opacity-40 pointer-events-none mix-blend-screen`} />
 
-            {/* 3D-ish Orbital Graphic Background */}
-            <OrbitalGraphics gradient={project.gradient} accent={project.accent} />
-
-            {/* Content Container */}
-            <div className="relative z-20 w-full h-full p-8 md:p-16 flex flex-col justify-between">
-
-                {/* Top: Header */}
-                <div className="flex justify-between items-start">
-                    <div className="space-y-4">
-                        <div className="flex items-center gap-3">
-                            <div className={`w-2 h-2 rounded-full bg-${project.accent} animate-pulse shadow-[0_0_10px_currentColor]`} />
-                            <span className={`text-xs font-mono uppercase tracking-widest text-${project.accent}`}>{project.category}</span>
+                {/* Card Top: Header */}
+                <div className="flex justify-between items-start relative z-10">
+                    <div className="space-y-3">
+                        <div className="flex items-center gap-2.5">
+                            <div className={`p-1.5 rounded-lg bg-zinc-900 border border-white/5 ${project.accent}`}>
+                                <project.icon className="w-4 h-4" />
+                            </div>
+                            <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-zinc-400">
+                                {project.category}
+                            </span>
                         </div>
-                        <h3 className="text-4xl md:text-6xl font-bold text-white tracking-tighter leading-none drop-shadow-[0_0_10px_rgba(255,255,255,0.8)]">
+                        <h3 className="text-3xl md:text-5xl font-bold text-white tracking-tight leading-none mt-2">
                             {project.title}
                         </h3>
                     </div>
 
-                    {/* External Link Icon */}
+                    {/* External Link */}
                     <a
                         href={project.link}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="p-4 rounded-full bg-white/5 border border-white/10 hover:bg-white text-white hover:text-black transition-all duration-300 cursor-pointer"
+                        className="p-3 rounded-xl bg-zinc-900 hover:bg-white text-zinc-400 hover:text-black border border-white/5 hover:border-white transition-all duration-300 cursor-pointer"
+                        aria-label={`Open ${project.title}`}
                     >
-                        <ArrowUpRight className="w-8 h-8" />
+                        <ArrowUpRight className="w-5 h-5" />
                     </a>
                 </div>
 
-                {/* Bottom: Description & Tags */}
-                <div className="space-y-8 max-w-3xl">
-                    <p className="text-xl md:text-2xl text-white font-light leading-relaxed drop-shadow-[0_0_5px_rgba(255,255,255,0.5)]">
+                {/* Card Bottom: Info & Tech Tags */}
+                <div className="space-y-6 max-w-3xl relative z-10 mt-auto">
+                    <p className="text-zinc-300 text-sm md:text-base font-light leading-relaxed font-sans">
                         {project.description}
                     </p>
 
-                    <div className="flex flex-wrap gap-3">
-                        {project.tags.map(tag => (
-                            <span key={tag} className="px-4 py-2 text-sm font-mono text-white/80 bg-white/5 border border-white/10 rounded-lg hover:border-white/30 transition-colors">
+                    <div className="flex flex-wrap gap-2.5 pt-2">
+                        {project.tags.map((tag) => (
+                            <span 
+                                key={tag} 
+                                className="px-3.5 py-1.5 text-xs font-mono text-zinc-400 bg-zinc-900/50 border border-white/5 rounded-lg"
+                            >
                                 {tag}
                             </span>
                         ))}
                     </div>
                 </div>
-            </div>
-
-        </div>
-    );
-}
-
-// 3D Orbital Vector Graphic (~2 Squares revolving around a circle)
-function OrbitalGraphics({ gradient, accent }) {
-    return (
-        <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
-            {/* Base Gradient Wash - Increased Opacity */}
-            <div className={`absolute inset-0 bg-gradient-to-br ${gradient} opacity-20`} />
-
-            {/* Centered 3D Scene */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] opacity-40">
-
-                {/* Central Circle (Star/Core) */}
-                <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 rounded-full border-2 border-${accent} shadow-[0_0_50px_currentColor] text-${accent}`} />
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-24 h-24 rounded-full bg-white/10 blur-xl" />
-
-                {/* Orbital Square 1 */}
-                <div className="absolute inset-0 animate-[spin_20s_linear_infinite]">
-                    <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 border border-${accent}/50 shadow-[0_0_15px_currentColor] text-${accent}`}
-                        style={{ transform: 'rotateX(70deg) rotateY(12deg)' }} />
-                </div>
-
-                {/* Orbital Square 2 (Opposite Axis) */}
-                <div className="absolute inset-0 animate-[spin_25s_linear_infinite_reverse]">
-                    <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 border border-dashed border-${accent}/50 text-${accent}`}
-                        style={{ transform: 'rotateX(70deg) rotateY(-12deg)' }} />
-                </div>
-
-                {/* Floating Particles/Stars */}
-                <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-white rounded-full animate-pulse" />
-                <div className="absolute bottom-1/4 right-1/4 w-3 h-3 bg-white/50 rounded-full animate-pulse delay-700" />
-
-            </div>
+            </motion.div>
         </div>
     );
 }

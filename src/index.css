@@ -5,6 +5,8 @@
 :root {
   --glass-border: rgba(255, 255, 255, 0.2);
   --glass-shine: rgba(255, 255, 255, 0.1);
+  --accent-red: 239, 68, 68;
+  --accent-cyan: 6, 182, 212;
 
   /* 
      CUSTOM CURSOR CONFIGURATION
@@ -20,7 +22,6 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     scroll-behavior: smooth;
-    /* Fallback */
   }
 
   body {
@@ -45,6 +46,30 @@
       cursor: var(--cursor-hover);
     }
   }
+
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 3px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(239, 68, 68, 0.25);
+  }
+
+  /* Firefox */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.08) transparent;
+  }
 }
 
 @layer utilities {
@@ -56,12 +81,65 @@
     background: rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.05);
     box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
   }
 
   .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-500;
+    @apply bg-clip-text text-transparent bg-gradient-to-b from-zinc-100 to-zinc-400;
+  }
+
+  .font-mono {
+    font-family: 'JetBrains Mono', 'Fira Code', 'SF Mono', 'Menlo', 'Monaco', 'Courier New', monospace;
+  }
+
+  .bg-grid {
+    background-size: 32px 32px;
+    background-image: 
+      linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+    background-position: center;
+  }
+
+  .accent-glow-red {
+    box-shadow: 0 0 20px rgba(239, 68, 68, 0.05), inset 0 0 12px rgba(239, 68, 68, 0.05);
+  }
+
+  .accent-glow-cyan {
+    box-shadow: 0 0 20px rgba(6, 182, 212, 0.05), inset 0 0 12px rgba(6, 182, 212, 0.05);
+  }
+
+  .mask-radial {
+    mask-image: radial-gradient(circle at center, black 60%, transparent 100%);
+    -webkit-mask-image: radial-gradient(circle at center, black 60%, transparent 100%);
+  }
+
+  /* Section divider — ambient glow line between home sections */
+  .section-divider {
+    position: relative;
+    height: 1px;
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(239, 68, 68, 0.15),
+      rgba(255, 255, 255, 0.08),
+      rgba(6, 182, 212, 0.15),
+      transparent
+    );
+  }
+
+  /* Reading progress bar */
+  .reading-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 2px;
+    background: linear-gradient(90deg, rgb(239, 68, 68), rgb(168, 85, 247));
+    z-index: 9999;
+    transform-origin: left;
   }
 }
 
@@ -85,4 +163,31 @@ html.lenis body {
 
 .lenis.lenis-scrolling iframe {
   pointer-events: none;
+}
+
+/* Curtain transition keyframes */
+@keyframes curtain-pulse {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
+
+.curtain-loader {
+  animation: curtain-pulse 1s ease-in-out infinite;
+}
+
+/* Blog post prose enhancements */
+.post-content {
+  /* Smooth entry for individual elements */
+}
+
+.post-content h2,
+.post-content h3,
+.post-content h4 {
+  scroll-margin-top: 5rem;
+}
+
+/* Floating TOC active state */
+.toc-item-active {
+  color: rgb(239, 68, 68);
+  border-left-color: rgb(239, 68, 68);
 }

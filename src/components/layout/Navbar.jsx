@@ -1,7 +1,7 @@
-import React from 'react';
-import { Home, User, Code, FolderGit2, History, Mail, FileText, BookOpen, PersonStanding, PenBox } from 'lucide-react';
+import React, { useRef } from 'react';
+import { Home, User, Code, FolderGit2, History, Mail, FileText, PenBox } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
-import clsx from 'clsx';
+import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 
 const navItems = [
     { name: 'Home', icon: Home, href: '/#', type: 'hash' },
@@ -17,79 +17,105 @@ const navItems = [
 export function Navbar() {
     const location = useLocation();
     const isHome = location.pathname === '/';
+    const mouseX = useMotionValue(Infinity);
 
     return (
-        <nav className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 pointer-events-none">
-            {/* Floating Container (No outlines/backgrounds) */}
-            <div className="flex items-end gap-2 px-4 py-2 pointer-events-auto">
+        <motion.nav 
+            initial={{ y: 80, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.5, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 flex items-center justify-center pointer-events-none"
+        >
+            <div 
+                onMouseMove={(e) => mouseX.set(e.clientX)}
+                onMouseLeave={() => mouseX.set(Infinity)}
+                className="flex items-end gap-3 px-4 py-3 bg-zinc-950/80 backdrop-blur-xl border border-white/5 rounded-2xl shadow-2xl pointer-events-auto"
+            >
                 {navItems.map((item) => {
                     const isActive =
                         (item.href === '/blog' && location.pathname.startsWith('/blog')) ||
                         (isHome && item.href === '/#' && !location.hash) ||
                         (isHome && item.href === `/#${location.hash.replace('#', '')}`);
 
-                    // Use <a> for external, or same-page hash links to preserve native scroll behavior
-                    // Use <Link> for cross-page navigation
-
-                    const isHashLink = item.type === 'hash';
-                    const targetHash = item.href.replace('/', ''); // e.g. #about
-
-                    let Component = Link;
-                    let props = {
-                        to: item.href,
-                    };
-
-                    if (item.external) {
-                        Component = 'a';
-                        props = {
-                            href: item.href,
-                            target: '_blank',
-                            rel: 'noopener noreferrer'
-                        };
-                    } else if (isHashLink && isHome) {
-                        Component = 'a';
-                        props = {
-                            href: targetHash || '#', // #about or #
-                        };
-                    }
-
                     return (
-                        <Component
+                        <NavItem 
                             key={item.name}
-                            {...props}
-                            className={clsx(
-                                "relative group flex flex-col items-center justify-center w-12 h-12 rounded-xl transition-all duration-300 ease-out",
-                                "hover:w-16 hover:h-16 hover:-translate-y-4",
-                                isActive ? "text-white" : "text-white/60 hover:text-white"
-                            )}
-                        >
-                            {/* Glassy Background only on individual Item Hover if needed, or just keep pure float */}
-                            <div className={clsx(
-                                "absolute inset-0 bg-black/40 backdrop-blur-md rounded-xl transition-opacity duration-300 border border-white/10",
-                                isActive ? "opacity-100" : "opacity-0 group-hover:opacity-100"
-                            )} />
-
-                            <div className="relative z-10 p-2">
-                                <item.icon className={clsx(
-                                    "w-6 h-6 transition-all duration-300",
-                                    "group-hover:w-8 group-hover:h-8"
-                                )} />
-                            </div>
-
-                            {/* Tooltip */}
-                            <span className="absolute -top-10 scale-0 group-hover:scale-100 transition-transform duration-200 px-3 py-1 bg-black/80 backdrop-blur-md rounded-lg text-xs text-white whitespace-nowrap border border-white/10">
-                                {item.name}
-                            </span>
-
-                            {/* Active Indicator (Dot) */}
-                            <div className={clsx(
-                                "absolute -bottom-2 w-1 h-1 bg-white rounded-full transition-opacity duration-300",
-                                isActive ? "opacity-100" : "opacity-0 group-hover:opacity-100"
-                            )} />
-                        </Component>
+                            item={item}
+                            isActive={isActive}
+                            isHome={isHome}
+                            mouseX={mouseX}
+                        />
                     );
                 })}
             </div>
-        </nav>
+        </motion.nav>
+    );
+}
+
+function NavItem({ item, isActive, isHome, mouseX }) {
+    const ref = useRef(null);
+
+    const distance = useTransform(mouseX, (val) => {
+        const bounds = ref.current?.getBoundingClientRect() ?? { x: 0, width: 0 };
+        return val - bounds.x - bounds.width / 2;
+    });
+
+    // Map distance to button dimensions
+    const widthTransform = useTransform(distance, [-150, 0, 150], [44, 56, 44]);
+    const heightTransform = useTransform(distance, [-150, 0, 150], [44, 56, 44]);
+    const iconSizeTransform = useTransform(distance, [-150, 0, 150], [18, 24, 18]);
+    const yTransform = useTransform(distance, [-150, 0, 150], [0, -8, 0]);
+
+    const width = useSpring(widthTransform, { mass: 0.1, stiffness: 180, damping: 15 });
+    const height = useSpring(heightTransform, { mass: 0.1, stiffness: 180, damping: 15 });
+    const iconSize = useSpring(iconSizeTransform, { mass: 0.1, stiffness: 180, damping: 15 });
+    const y = useSpring(yTransform, { mass: 0.1, stiffness: 180, damping: 15 });
+
+    const isHashLink = item.type === 'hash';
+    const targetHash = item.href.replace('/', '');
+
+    let Component = Link;
+    let props = { to: item.href };
+
+    if (item.external) {
+        Component = 'a';
+        props = {
+            href: item.href,
+            target: '_blank',
+            rel: 'noopener noreferrer'
+        };
+    } else if (isHashLink && isHome) {
+        Component = 'a';
+        props = { href: targetHash || '#' };
+    }
+
+    return (
+        <Component {...props} className="relative group">
+            <motion.div
+                ref={ref}
+                style={{ width, height, y }}
+                className="relative flex items-center justify-center rounded-xl bg-zinc-900/40 border border-white/5 hover:border-white/10 transition-colors"
+            >
+                {isActive && (
+                    <motion.div
+                        layoutId="active-pill"
+                        className="absolute inset-0 bg-white/5 rounded-xl border border-white/10 z-0"
+                        transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                    />
+                )}
+
+                <motion.div 
+                    style={{ width: iconSize, height: iconSize }} 
+                    className="relative z-10 flex items-center justify-center text-zinc-400 group-hover:text-white transition-colors"
+                >
+                    <item.icon className="w-full h-full" />
+                </motion.div>
+
+                {/* Tooltip */}
+                <span className="absolute -top-12 left-1/2 -translate-x-1/2 scale-0 group-hover:scale-100 origin-bottom transition-all duration-200 px-3 py-1 bg-zinc-950/95 backdrop-blur-md rounded-lg text-[10px] tracking-wide font-mono text-zinc-300 whitespace-nowrap border border-white/5 shadow-xl">
+                    {item.name}
+                </span>
+            </motion.div>
+        </Component>
     );
 }

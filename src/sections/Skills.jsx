@@ -1,126 +1,162 @@
-import React, { useRef, useLayoutEffect } from 'react';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import clsx from 'clsx';
+import React, { useRef, useState } from 'react';
+import { motion } from 'framer-motion';
 
-gsap.registerPlugin(ScrollTrigger);
-
-// Extended Skills List (~24 items)
-const skills = [
-    // Row 1: The Core & Languages
-    { name: 'Python', icon: 'https://cdn.simpleicons.org/python/ffffff' },
-    { name: 'JavaScript', icon: 'https://cdn.simpleicons.org/javascript/ffffff' },
-    { name: 'TypeScript', icon: 'https://cdn.simpleicons.org/typescript/ffffff' },
-    { name: 'C', icon: 'https://cdn.simpleicons.org/c/ffffff' },
-    { name: 'pypi', icon: 'https://cdn.simpleicons.org/pypi/5C3EE8' },
-    { name: 'SQL', icon: 'https://cdn.simpleicons.org/mysql/ffffff' },
-    { name: 'Bash', icon: 'https://cdn.simpleicons.org/gnubash/ffffff' },
-    { name: 'Git', icon: 'https://cdn.simpleicons.org/git/f05032' },
-
-    // Row 2: AI, LLMs & Hardware (Offset Row)
-    { name: 'Ollama', icon: 'https://cdn.simpleicons.org/ollama/ffffff' },
-    { name: 'Open LLMs', icon: 'https://cdn.simpleicons.org/huggingface/ffffff' },
-    { name: 'MCP Servers', icon: 'https://cdn.simpleicons.org/anthropic/ffffff' },
-    { name: 'Raspberry Pi', icon: 'https://cdn.simpleicons.org/raspberrypi/C51A4A' },
-    { name: 'Linux', icon: 'https://cdn.simpleicons.org/linux/ffffff' },
-    { name: 'Kali', icon: 'https://cdn.simpleicons.org/kalilinux/ffffff' },
-    { name: 'Docker', icon: 'https://cdn.simpleicons.org/docker/2496ed' },
-    { name: 'Kubernetes', icon: 'https://cdn.simpleicons.org/kubernetes/326ce5' },
-
-    // Row 3: Backend & Full Stack
-    { name: 'Node.js', icon: 'https://cdn.simpleicons.org/nodedotjs/ffffff' },
-    { name: 'npm', icon: 'https://cdn.simpleicons.org/npm/0063F7' },
-    { name: 'Express', icon: 'https://cdn.simpleicons.org/express/ffffff' },
-    { name: 'FastAPI', icon: 'https://cdn.simpleicons.org/fastapi/ffffff' },
-    { name: 'Flask', icon: 'https://cdn.simpleicons.org/flask/ffffff' },
-    { name: 'Redis', icon: 'https://cdn.simpleicons.org/redis/ffffff' },
-    { name: 'Mongo', icon: 'https://cdn.simpleicons.org/mongodb/47a248' },
-    { name: 'PostgreSQL', icon: 'https://cdn.simpleicons.org/postgresql/4169E1' },
+const skillCategories = [
+    {
+        title: 'Core & Languages',
+        tag: 'LANG.SYS',
+        skills: [
+            { name: 'Python', icon: 'https://cdn.simpleicons.org/python/ffffff' },
+            { name: 'TypeScript', icon: 'https://cdn.simpleicons.org/typescript/ffffff' },
+            { name: 'JavaScript', icon: 'https://cdn.simpleicons.org/javascript/ffffff' },
+            { name: 'C', icon: 'https://cdn.simpleicons.org/c/ffffff' },
+            { name: 'SQL', icon: 'https://cdn.simpleicons.org/mysql/ffffff' },
+            { name: 'Bash', icon: 'https://cdn.simpleicons.org/gnubash/ffffff' },
+            { name: 'Git', icon: 'https://cdn.simpleicons.org/git/ffffff' },
+        ]
+    },
+    {
+        title: 'Systems & Infrastructure',
+        tag: 'INFRA.SEC',
+        skills: [
+            { name: 'Linux', icon: 'https://cdn.simpleicons.org/linux/ffffff' },
+            { name: 'Docker', icon: 'https://cdn.simpleicons.org/docker/ffffff' },
+            { name: 'Kubernetes', icon: 'https://cdn.simpleicons.org/kubernetes/ffffff' },
+            { name: 'Kali Linux', icon: 'https://cdn.simpleicons.org/kalilinux/ffffff' },
+            { name: 'Ollama', icon: 'https://cdn.simpleicons.org/ollama/ffffff' },
+            { name: 'MCP Servers', icon: 'https://cdn.simpleicons.org/anthropic/ffffff' },
+            { name: 'Raspberry Pi', icon: 'https://cdn.simpleicons.org/raspberrypi/ffffff' },
+        ]
+    },
+    {
+        title: 'Backend & Data',
+        tag: 'DB.BACKEND',
+        skills: [
+            { name: 'Node.js', icon: 'https://cdn.simpleicons.org/nodedotjs/ffffff' },
+            { name: 'Express', icon: 'https://cdn.simpleicons.org/express/ffffff' },
+            { name: 'FastAPI', icon: 'https://cdn.simpleicons.org/fastapi/ffffff' },
+            { name: 'Flask', icon: 'https://cdn.simpleicons.org/flask/ffffff' },
+            { name: 'Redis', icon: 'https://cdn.simpleicons.org/redis/ffffff' },
+            { name: 'MongoDB', icon: 'https://cdn.simpleicons.org/mongodb/ffffff' },
+            { name: 'PostgreSQL', icon: 'https://cdn.simpleicons.org/postgresql/ffffff' },
+        ]
+    }
 ];
 
 export function Skills() {
     const containerRef = useRef(null);
-    const wallRef = useRef(null);
 
-    useLayoutEffect(() => {
-        const ctx = gsap.context(() => {
-            const bricks = wallRef.current.querySelectorAll('.skill-brick');
+    const cardVariants = {
+        hidden: { opacity: 0, y: 30 },
+        visible: (i) => ({
+            opacity: 1,
+            y: 0,
+            transition: {
+                delay: i * 0.15,
+                duration: 0.8,
+                ease: [0.16, 1, 0.3, 1]
+            }
+        })
+    };
 
-            gsap.fromTo(bricks,
-                { opacity: 0, scale: 0.5, y: 50 },
-                {
-                    opacity: 1,
-                    scale: 1,
-                    y: 0,
-                    duration: 0.6,
-                    stagger: {
-                        amount: 1,
-                        grid: "auto",
-                        from: "center"
-                    },
-                    ease: "back.out(1.5)",
-                    scrollTrigger: {
-                        trigger: containerRef.current,
-                        start: "top 70%",
-                        toggleActions: "play none none reverse"
-                    }
-                }
-            );
+    return (
+        <section 
+            id="skills" 
+            ref={containerRef} 
+            className="relative min-h-screen w-full flex flex-col items-center justify-center py-32 bg-black bg-grid px-6 md:px-20"
+        >
+            <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-black pointer-events-none z-0" />
 
-        }, containerRef);
-        return () => ctx.revert();
-    }, []);
+            <div className="z-10 mb-20 text-center">
+                <span className="font-mono text-xs uppercase tracking-[0.25em] text-red-500">
+                    [ TECH STACK ]
+                </span>
+                <h2 className="text-4xl md:text-6xl font-bold tracking-tight text-white mt-2">
+                    THE ARSENAL
+                </h2>
+            </div>
 
-    // Split skills into 3 chunks for the geometric brick wall
-    const chunkSize = Math.ceil(skills.length / 3);
-    const row1 = skills.slice(0, chunkSize);
-    const row2 = skills.slice(chunkSize, chunkSize * 2);
-    const row3 = skills.slice(chunkSize * 2);
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-7xl w-full relative z-10">
+                {skillCategories.map((category, index) => (
+                    <CategoryCard 
+                        key={category.title} 
+                        category={category} 
+                        index={index} 
+                        variants={cardVariants}
+                    />
+                ))}
+            </div>
+        </section>
+    );
+}
 
-    const Brick = ({ skill }) => (
-        <div className="skill-brick group relative flex flex-col items-center justify-center w-24 h-24 md:w-32 md:h-32 bg-white/5 border border-white/5 rounded-xl transition-all duration-300 hover:bg-white/10 hover:border-white/20 hover:scale-110 hover:z-20 hover:shadow-[0_0_30px_rgba(255,255,255,0.1)] cursor-default">
-            {/* Icon */}
+function CategoryCard({ category, index, variants }) {
+    return (
+        <motion.div
+            custom={index}
+            variants={variants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            className="p-8 bg-zinc-950/40 border border-white/5 rounded-2xl flex flex-col justify-start space-y-6"
+        >
+            <div className="flex items-center justify-between border-b border-white/5 pb-4">
+                <h3 className="text-lg font-medium text-white tracking-wide">
+                    {category.title}
+                </h3>
+                <span className="font-mono text-[10px] text-zinc-500 tracking-widest">
+                    //{category.tag}
+                </span>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+                {category.skills.map((skill) => (
+                    <SkillTile key={skill.name} skill={skill} />
+                ))}
+            </div>
+        </motion.div>
+    );
+}
+
+function SkillTile({ skill }) {
+    const tileRef = useRef(null);
+    const [coords, setCoords] = useState({ x: 0, y: 0 });
+    const [isHovered, setIsHovered] = useState(false);
+
+    const handleMouseMove = (e) => {
+        const rect = tileRef.current.getBoundingClientRect();
+        setCoords({
+            x: e.clientX - rect.left,
+            y: e.clientY - rect.top,
+        });
+    };
+
+    return (
+        <div
+            ref={tileRef}
+            onMouseMove={handleMouseMove}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+            className="relative flex items-center gap-3 p-3 bg-zinc-900/30 hover:bg-zinc-900/60 border border-white/5 hover:border-white/10 rounded-xl transition-all duration-300 overflow-hidden group cursor-default"
+        >
+            {/* Spotlight cursor glow overlay */}
+            {isHovered && (
+                <div 
+                    className="absolute inset-0 pointer-events-none rounded-xl transition-opacity duration-300"
+                    style={{
+                        background: `radial-gradient(70px circle at ${coords.x}px ${coords.y}px, rgba(239, 68, 68, 0.08), transparent 80%)`
+                    }}
+                />
+            )}
+
             <img
                 src={skill.icon}
                 alt={skill.name}
-                className="w-10 h-10 md:w-12 md:h-12 transition-all duration-500 filter grayscale opacity-40 group-hover:grayscale-0 group-hover:opacity-100"
+                className="w-5 h-5 opacity-40 group-hover:opacity-100 group-hover:scale-105 transition-all duration-300 filter"
             />
-            {/* Label */}
-            <span className="absolute bottom-2 text-[10px] font-medium text-white/40 uppercase opacity-0 transform translate-y-2 transition-all duration-300 group-hover:opacity-100 group-hover:translate-y-0 text-center w-full">
+            <span className="text-xs font-light text-zinc-400 group-hover:text-zinc-200 transition-colors font-mono">
                 {skill.name}
             </span>
         </div>
-    );
-
-    return (
-        <section id="skills" ref={containerRef} className="relative min-h-[60vh] w-full flex flex-col items-center justify-center py-32 bg-black px-4 overflow-hidden">
-
-            <div className="z-10 mb-20 text-center">
-                <h2 className="text-4xl md:text-5xl font-semibold tracking-tighter text-white">The Arsenal</h2>
-                <p className="text-white/40 text-sm tracking-widest uppercase mt-2">Core Technologies</p>
-            </div>
-
-            {/* The Brick Wall */}
-            <div ref={wallRef} className="flex flex-col gap-4 md:gap-6 items-center w-full max-w-7xl perspective-[1000px]">
-
-                {/* Row 1: Standard */}
-                <div className="flex flex-wrap justify-center gap-4 md:gap-6 w-full">
-                    {row1.map(skill => <Brick key={skill.name} skill={skill} />)}
-                </div>
-
-                {/* Row 2: Offset (The "Brick" Effect) */}
-                {/* We use padding or margin to visually shift this row on desktop */}
-                <div className="flex flex-wrap justify-center gap-4 md:gap-6 w-full md:pl-16">
-                    {row2.map(skill => <Brick key={skill.name} skill={skill} />)}
-                </div>
-
-                {/* Row 3: Standard (or Counter-Offset if needed, sticking to centered for balance) */}
-                <div className="flex flex-wrap justify-center gap-4 md:gap-6 w-full">
-                    {row3.map(skill => <Brick key={skill.name} skill={skill} />)}
-                </div>
-
-            </div>
-
-        </section>
     );
 }

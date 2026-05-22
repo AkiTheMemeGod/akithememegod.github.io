@@ -1,137 +1,131 @@
-import React, { useRef, useLayoutEffect } from 'react';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { GlassCard } from '../components/ui/GlassCard';
-import { Lightbulb, Coffee, Box } from 'lucide-react';
+import React, { useRef } from 'react';
+import { motion } from 'framer-motion';
+import { Cpu, Shield, Terminal } from 'lucide-react';
 
-gsap.registerPlugin(ScrollTrigger);
-
-const identities = [
+const principles = [
     {
         id: '01',
-        role: 'THE ARCHITECT',
-        icon: Box,
-        desc: "My code is cleaner than my apartment. I build systems so robust they judge me for my own sleep schedule. Structure is my love language.",
-        color: 'text-blue-400',
-        border: 'group-hover:border-blue-500/50',
-        glow: 'group-hover:shadow-[0_0_20px_rgba(59,130,246,0.3)]'
+        title: 'Deterministic Architecture',
+        icon: Cpu,
+        desc: 'Constructing robust structures that scale predictably. I value system isolation, clean separation of concerns, and defensive coding patterns that make long-term maintenance straightforward.',
+        accent: 'text-red-500',
+        bg: 'group-hover:bg-red-500/5'
     },
     {
         id: '02',
-        role: 'THE INNOVATOR',
-        icon: Lightbulb,
-        desc: "Safety third. I treat 'Impossible' as a dare. I don't think outside the box; I recycled the box into a 3D printer.",
-        color: 'text-emerald-400',
-        border: 'group-hover:border-emerald-500/50',
-        glow: 'group-hover:shadow-[0_0_20px_rgba(16,185,129,0.3)]'
+        title: 'Security & Sandbox Isolation',
+        icon: Shield,
+        desc: 'Developing software under the assumption of hostile network environments. I integrate containerized security, sandboxing, and strict identity policies across all architecture layers.',
+        accent: 'text-cyan-500',
+        bg: 'group-hover:bg-cyan-500/5'
     },
     {
         id: '03',
-        role: 'THE NERD',
-        icon: Coffee,
-        desc: "I judge kerning in real life. Powered by caffeine and a compulsive need to fix things that aren't broken. 1px off is a personal insult.",
-        color: 'text-purple-400',
-        border: 'group-hover:border-purple-500/50',
-        glow: 'group-hover:shadow-[0_0_20px_rgba(168,85,247,0.3)]'
+        title: 'Tooling & Workflow Automation',
+        icon: Terminal,
+        desc: 'Building custom scripts, CLI utilities, and CI/CD runners to speed up local loops. I believe developer environment optimization is essential for writing high-quality code.',
+        accent: 'text-purple-500',
+        bg: 'group-hover:bg-purple-500/5'
     }
 ];
 
 export function About() {
     const containerRef = useRef(null);
-    const headerRef = useRef(null);
-    const cardsRef = useRef([]);
 
-    useLayoutEffect(() => {
-        const ctx = gsap.context(() => {
+    const fadeUp = {
+        hidden: { opacity: 0, y: 30 },
+        visible: {
+            opacity: 1,
+            y: 0,
+            transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] }
+        }
+    };
 
-            // Header: Simple Fade In
-            gsap.fromTo(headerRef.current,
-                { opacity: 0, y: 30 },
-                {
-                    opacity: 1,
-                    y: 0,
-                    duration: 0.8,
-                    ease: "power3.out",
-                    scrollTrigger: {
-                        trigger: containerRef.current,
-                        start: "top 75%",
-                    }
-                }
-            );
-
-            // Cards: Poppy Staggered Entry (No Scrub)
-            gsap.fromTo(cardsRef.current,
-                { y: 50, opacity: 0 },
-                {
-                    y: 0,
-                    opacity: 1,
-                    duration: 0.8,
-                    stagger: 0.2, // Distinct 200ms delay between each card
-                    ease: "back.out(1.7)", // Slight bounce for "pop" effect
-                    scrollTrigger: {
-                        trigger: containerRef.current,
-                        start: "top 70%",
-                        toggleActions: "play none none reverse"
-                    }
-                }
-            );
-
-        }, containerRef);
-
-        return () => ctx.revert();
-    }, []);
+    const containerVariants = {
+        hidden: {},
+        visible: {
+            transition: {
+                staggerChildren: 0.15
+            }
+        }
+    };
 
     return (
-        <section id="about" ref={containerRef} className="relative min-h-[90vh] py-32 w-full flex flex-col items-center justify-center px-6 bg-black">
+        <section 
+            id="about" 
+            ref={containerRef} 
+            className="relative min-h-screen py-32 w-full flex items-center justify-center px-6 md:px-20 bg-black bg-grid"
+        >
+            {/* Background mask to fade grid near section edges */}
+            <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-black pointer-events-none z-0" />
 
-            <div className="max-w-7xl w-full">
+            <div className="max-w-7xl w-full relative z-10">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20">
+                    
+                    {/* Left Sticky Column */}
+                    <motion.div 
+                        initial="hidden"
+                        whileInView="visible"
+                        viewport={{ once: true, margin: "-100px" }}
+                        variants={fadeUp}
+                        className="lg:col-span-5 flex flex-col justify-start lg:sticky lg:top-32 h-fit space-y-6"
+                    >
+                        <div className="space-y-2">
+                            <span className="font-mono text-xs uppercase tracking-[0.25em] text-red-500">
+                                [ IDENTITY & OUTLINE ]
+                            </span>
+                            <h2 className="text-4xl md:text-6xl font-bold tracking-tight text-white">
+                                BEHIND THE TERMINAL
+                            </h2>
+                        </div>
+                        <p className="text-zinc-400 text-sm md:text-base font-light leading-relaxed tracking-wide">
+                            I am a developer who believes in engineering software systems with high standards of craft. Rather than deploying black boxes, I design transparent, highly testable code bases that are performant and secure under pressure. 
+                        </p>
+                        <p className="text-zinc-500 text-xs md:text-sm font-light leading-relaxed tracking-wide">
+                            My domain ranges from setting up declarative container topologies and local large language models to writing modular frontends with fine layouts.
+                        </p>
+                    </motion.div>
 
-                {/* Section Header */}
-                <div ref={headerRef} className="mb-20 text-center space-y-4 opacity-0">
-                    <p className="font-mono text-xs text-white/40 tracking-[0.3em] uppercase">
-                        System Identity
-                    </p>
-                    <h2 className="text-5xl md:text-7xl font-bold tracking-tight text-white">
-                        BEHIND THE TERMINAL
-                    </h2>
-                </div>
-
-                {/* Identity Matrix */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    {identities.map((item, index) => (
-                        <div key={item.id} className="perspective-1000">
-                            <div ref={el => cardsRef.current[index] = el} className="h-full opacity-0">
-                                <GlassCard className={`relative h-full p-8 md:p-10 flex flex-col items-center text-center justify-start group transition-all duration-500 hover:-translate-y-2 ${item.border} ${item.glow}`}>
-
-                                    {/* Combined Header Pill */}
-                                    <div className={`flex items-center gap-4 px-6 py-3 rounded-full bg-white/5 border border-white/10 mb-8 group-hover:scale-105 transition-transform duration-300`}>
-                                        <item.icon className={`w-5 h-5 ${item.color}`} />
-                                        <h3 className="text-lg font-bold text-white tracking-widest uppercase">
-                                            {item.role}
-                                        </h3>
-                                    </div>
-
-                                    {/* Content */}
+                    {/* Right Column: Ledger stack */}
+                    <motion.div 
+                        variants={containerVariants}
+                        initial="hidden"
+                        whileInView="visible"
+                        viewport={{ once: true, margin: "-100px" }}
+                        className="lg:col-span-7 space-y-6"
+                    >
+                        {principles.map((item) => (
+                            <motion.div
+                                key={item.id}
+                                variants={fadeUp}
+                                className="group relative p-8 bg-zinc-950/40 border border-white/5 hover:border-white/10 rounded-2xl transition-all duration-300 overflow-hidden flex flex-col justify-between"
+                            >
+                                {/* Light dynamic glow on hover */}
+                                <div className={`absolute inset-0 opacity-0 transition-opacity duration-300 pointer-events-none ${item.bg}`} />
+                                
+                                <div className="flex items-start justify-between gap-6 relative z-10">
                                     <div className="space-y-4">
-                                        <div className={`w-8 h-[2px] mx-auto ${item.color.replace('text-', 'bg-')} opacity-50`} />
-                                        <p className="text-white/60 leading-relaxed font-light text-base md:text-lg">
+                                        <div className="flex items-center gap-3">
+                                            <div className={`p-2 rounded-lg bg-zinc-900 border border-white/5 ${item.accent}`}>
+                                                <item.icon className="w-5 h-5" />
+                                            </div>
+                                            <h3 className="text-lg md:text-xl font-medium text-white tracking-wide">
+                                                {item.title}
+                                            </h3>
+                                        </div>
+                                        <p className="text-zinc-400 text-xs md:text-sm leading-relaxed font-light font-sans">
                                             {item.desc}
                                         </p>
                                     </div>
+                                    <span className="font-mono text-xs text-zinc-600 tracking-wider">
+                                        [{item.id}]
+                                    </span>
+                                </div>
+                            </motion.div>
+                        ))}
+                    </motion.div>
 
-                                    {/* Decorative ID */}
-                                    <div className="mt-8 pt-6 border-t border-white/5 w-full flex-grow flex items-end justify-center">
-                                        <span className="font-mono text-xs text-white/20 tracking-[0.2em]">{item.id}</span>
-                                    </div>
-
-                                    {/* NOTE: Removed the bg-gradient overlay to fix "white box" issue */}
-
-                                </GlassCard>
-                            </div>
-                        </div>
-                    ))}
                 </div>
-
             </div>
         </section>
     );

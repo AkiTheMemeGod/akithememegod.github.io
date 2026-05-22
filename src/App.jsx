@@ -1,6 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import Lenis from 'lenis';
+import { AnimatePresence } from 'framer-motion';
 import { Navbar } from './components/layout/Navbar';
 import { Home } from './pages/Home';
 import { BlogIndex } from './pages/BlogIndex';
@@ -8,6 +9,7 @@ import { BlogPost } from './pages/BlogPost';
 
 function App() {
   const location = useLocation();
+  const lenisRef = useRef(null);
 
   useEffect(() => {
     const lenis = new Lenis({
@@ -20,6 +22,8 @@ function App() {
       smoothTouch: false,
       touchMultiplier: 2,
     });
+
+    lenisRef.current = lenis;
 
     function raf(time) {
       lenis.raf(time);
@@ -36,7 +40,11 @@ function App() {
   // Scroll to top on route change (unless hash is present)
   useEffect(() => {
     if (!location.hash) {
-      window.scrollTo(0, 0);
+      if (lenisRef.current) {
+        lenisRef.current.scrollTo(0, { immediate: true });
+      } else {
+        window.scrollTo(0, 0);
+      }
     }
   }, [location.pathname, location.hash]);
 
@@ -45,11 +53,13 @@ function App() {
       <Navbar />
 
       <main className="relative z-10 w-full">
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/blog" element={<BlogIndex />} />
-          <Route path="/blog/:slug" element={<BlogPost />} />
-        </Routes>
+        <AnimatePresence mode="wait">
+          <Routes location={location} key={location.pathname}>
+            <Route path="/" element={<Home />} />
+            <Route path="/blog" element={<BlogIndex />} />
+            <Route path="/blog/:slug" element={<BlogPost />} />
+          </Routes>
+        </AnimatePresence>
       </main>
     </div>
   );

@@ -1,173 +1,188 @@
-import React, { useRef, useState, useEffect } from 'react';
-import { Copy, Check, Github, Linkedin, ArrowUpRight, Mail } from 'lucide-react';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-
-gsap.registerPlugin(ScrollTrigger);
+import React, { useState, useRef, useEffect } from 'react';
+import { Terminal, Github, Linkedin, Mail, ExternalLink, Check, Copy } from 'lucide-react';
 
 export function Contact() {
-    const cardRef = useRef(null);
-    const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-
-    const handleMouseMove = (e) => {
-        if (!cardRef.current) return;
-        const rect = cardRef.current.getBoundingClientRect();
-        setMousePosition({
-            x: e.clientX - rect.left,
-            y: e.clientY - rect.top,
-        });
-    };
-
-    return (
-        <section id="contact" className="relative min-h-[80vh] w-full flex items-center justify-center px-6 bg-black">
-
-            <div className="w-full max-w-4xl">
-                {/* Header - TechnoBlade Tribute */}
-                <div className="mb-20 text-center space-y-6">
-                    <h2 className="text-6xl md:text-8xl font-bold tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white via-white to-white/50 pb-4 drop-shadow-[0_0_30px_rgba(255,255,255,0.3)]">
-                        Gimme a call? Maybe not. Let's stick to online.
-                    </h2>
-                    <p className="text-neutral-500 text-lg md:text-xl font-light tracking-wide max-w-2xl mx-auto">
-                        I have the tools. You have the vision. Let's conquer.
-                    </p>
-                </div>
-
-                {/* The Obsidian Slab */}
-                <div
-                    ref={cardRef}
-                    onMouseMove={handleMouseMove}
-                    className="group relative w-full rounded-3xl bg-neutral-950 border border-neutral-900 overflow-hidden"
-                >
-                    {/* Spotlight Effect - Texture Reveal */}
-                    <div
-                        className="pointer-events-none absolute -inset-px opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                        style={{
-                            background: `radial-gradient(600px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(255,255,255,0.06), transparent 40%)`
-                        }}
-                    />
-
-                    {/* Spotlight Effect - Border Highlight */}
-                    <div
-                        className="pointer-events-none absolute -inset-px rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10"
-                        style={{
-                            background: `radial-gradient(600px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(255,255,255,0.1), transparent 40%)`,
-                            maskImage: 'linear-gradient(black, black), linear-gradient(black, black)',
-                            maskClip: 'content-box, border-box',
-                            maskComposite: 'exclude',
-                            WebkitMaskComposite: 'xor',
-                            padding: '1px'
-                        }}
-                    />
-
-                    <div className="relative z-20 p-8 md:p-16 flex flex-col md:flex-row items-center justify-between gap-12">
-
-                        {/* Interactive Cyber Email Component */}
-                        <CyberEmail />
-
-                        <div className="flex items-center gap-4">
-                            {[
-                                {
-                                    name: 'GitHub',
-                                    url: 'https://github.com/AkiTheMemeGod',
-                                    icon: Github
-                                },
-                                {
-                                    name: 'LinkedIn',
-                                    url: 'https://linkedin.com/in/akash-k19052022',
-                                    icon: Linkedin
-                                }
-                            ].map(social => (
-                                <a
-                                    key={social.name}
-                                    href={social.url}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="p-4 rounded-full bg-white/5 hover:bg-white/10 border border-white/5 hover:border-white/20 transition-all group/icon"
-                                    aria-label={social.name}
-                                >
-                                    <social.icon className="w-6 h-6 text-neutral-400 group-hover/icon:text-white transition-all duration-300 group-hover/icon:scale-110 group-hover/icon:rotate-[-5deg]" />
-                                </a>
-                            ))}
-                        </div>
-                    </div>
-                </div>
-
-                {/* Footer */}
-                <div className="mt-20 text-center">
-                    <p className="text-neutral-600 font-mono text-sm">
-                        built by a nerd.
-                    </p>
-                </div>
-
-            </div>
-        </section>
-    );
-}
-
-// Cyberpunk Decrypting Email Component
-function CyberEmail() {
-    const [display, setDisplay] = useState('REVEAL_EMAIL');
+    const [history, setHistory] = useState([
+        { type: 'system', text: 'Initializing secure connection protocol...' },
+        { type: 'system', text: 'Connected to gateway: akash.dev [AES-256-GCM]' },
+        { type: 'command', text: './load_contact_menu.sh' },
+        { type: 'output', text: 'Available commands loaded. Select a target below to execute:' }
+    ]);
     const [copied, setCopied] = useState(false);
-    const emailParts = ['k.akashkumar', 'gmail.com']; // Split to foil simple scrapers
-    const realEmail = emailParts.join('@');
+    const terminalEndRef = useRef(null);
 
-    const intervalRef = useRef(null);
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789$#@%&*';
+    const email = 'k.akashkumar@gmail.com';
 
-    const scramble = () => {
-        let iteration = 0;
-        clearInterval(intervalRef.current);
+    // Auto-scroll terminal to bottom when history changes
+    useEffect(() => {
+        terminalEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }, [history]);
 
-        intervalRef.current = setInterval(() => {
-            setDisplay(prev =>
-                realEmail
-                    .split('')
-                    .map((letter, index) => {
-                        if (index < iteration) return realEmail[index];
-                        return chars[Math.floor(Math.random() * chars.length)];
-                    })
-                    .join('')
-            );
-
-            if (iteration >= realEmail.length) {
-                clearInterval(intervalRef.current);
-            }
-
-            iteration += 1 / 2; // Speed of decryption
-        }, 30);
+    const addLog = (command, outputs) => {
+        setHistory(prev => [
+            ...prev,
+            { type: 'command', text: command },
+            ...outputs.map(o => ({ type: 'output', text: o }))
+        ]);
     };
 
-    const reset = () => {
-        clearInterval(intervalRef.current);
-        setDisplay('REVEAL_EMAIL');
-        setCopied(false);
-    };
-
-    const handleCopy = () => {
-        navigator.clipboard.writeText(realEmail);
+    const handleEmail = () => {
+        navigator.clipboard.writeText(email);
         setCopied(true);
+        addLog('cat contact_info.json', [
+            '{',
+            `  "email": "${email}",`,
+            '  "location": "Bengaluru, India",',
+            '  "status": "Active / Accepting selective roles"',
+            '}',
+            '>> SUCCESS: Email copied to clipboard.'
+        ]);
         setTimeout(() => setCopied(false), 2000);
     };
 
-    return (
-        <div
-            onMouseEnter={scramble}
-            onMouseLeave={reset}
-            onClick={handleCopy}
-            className="group/email flex items-center gap-6 cursor-pointer"
-        >
-            <div className="p-5 rounded-full bg-white/5 border border-white/10 group-hover/email:bg-white group-hover/email:text-black transition-all duration-300">
-                {copied ? <Check className="w-8 h-8" /> : <Mail className="w-8 h-8 text-neutral-400 group-hover/email:text-black transition-colors" />}
-            </div>
+    const handleGithub = () => {
+        addLog('curl -s https://api.github.com/users/AkiTheMemeGod', [
+            'Fetching remote user manifest...',
+            '>> REDIRECT: Redirecting to github.com/AkiTheMemeGod'
+        ]);
+        setTimeout(() => {
+            window.open('https://github.com/AkiTheMemeGod', '_blank', 'noopener,noreferrer');
+        }, 800);
+    };
 
-            <div className="text-left">
-                <p className="text-neutral-500 text-xs font-mono tracking-widest uppercase mb-2">
-                    {copied ? 'COPIED TO CLIPBOARD' : 'SECURE CHANNEL'}
-                </p>
-                <span className={`text-2xl md:text-3xl font-bold tracking-tight break-all font-mono transition-colors ${copied ? 'text-green-400' : 'text-white'}`}>
-                    {display}
-                </span>
+    const handleLinkedin = () => {
+        addLog('ssh -T git@linkedin.com/in/akash-k19052022', [
+            'Negotiating secure handshake...',
+            '>> REDIRECT: Redirecting to linkedin.com/in/akash-k19052022'
+        ]);
+        setTimeout(() => {
+            window.open('https://linkedin.com/in/akash-k19052022', '_blank', 'noopener,noreferrer');
+        }, 800);
+    };
+
+    const handleClear = () => {
+        setHistory([
+            { type: 'command', text: 'clear' },
+            { type: 'output', text: 'Console cleared. Active terminal session ready.' }
+        ]);
+    };
+
+    return (
+        <section 
+            id="contact" 
+            className="relative min-h-screen w-full flex items-center justify-center bg-black px-6 py-32"
+        >
+            <div className="w-full max-w-3xl z-10 flex flex-col space-y-12">
+                {/* Header */}
+                <div className="text-center space-y-4">
+                    <span className="font-mono text-xs uppercase tracking-[0.25em] text-red-500">
+                        [ SECURE CHANNEL ]
+                    </span>
+                    <h2 className="text-4xl md:text-6xl font-bold tracking-tight text-white mt-2">
+                        ESTABLISH CONNECTION
+                    </h2>
+                    <p className="text-zinc-500 text-sm md:text-base font-light max-w-lg mx-auto">
+                        Trigger commands below to fetch coordinates or access social gateway routing.
+                    </p>
+                </div>
+
+                {/* The Terminal Box */}
+                <div className="w-full bg-[#050505] border border-white/10 rounded-xl overflow-hidden shadow-2xl flex flex-col font-mono text-xs md:text-sm">
+                    {/* Terminal Header */}
+                    <div className="flex items-center justify-between px-4 py-3 bg-[#0d0d0d] border-b border-white/5 select-none">
+                        <div className="flex items-center space-x-2">
+                            <div className="w-3 h-3 rounded-full bg-red-500/80" />
+                            <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
+                            <div className="w-3 h-3 rounded-full bg-green-500/80" />
+                        </div>
+                        <div className="text-zinc-500 text-[10px] md:text-xs">
+                            guest@akash.dev: ~
+                        </div>
+                        <div className="flex items-center gap-1.5 text-[10px] text-green-500/80 font-bold">
+                            <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+                            SECURE
+                        </div>
+                    </div>
+
+                    {/* Terminal Logs Body */}
+                    <div className="p-6 space-y-3 h-64 overflow-y-auto border-b border-white/5 scrollbar-thin scrollbar-thumb-zinc-800">
+                        {history.map((log, idx) => (
+                            <div key={idx} className="leading-relaxed">
+                                {log.type === 'system' && (
+                                    <span className="text-zinc-500">[* {log.text}]</span>
+                                )}
+                                {log.type === 'command' && (
+                                    <span>
+                                        <span className="text-red-500">guest@akash.dev:~$</span>{' '}
+                                        <span className="text-white">{log.text}</span>
+                                    </span>
+                                )}
+                                {log.type === 'output' && (
+                                    <span className="text-zinc-400 whitespace-pre-wrap">{log.text}</span>
+                                )}
+                            </div>
+                        ))}
+                        <div ref={terminalEndRef} />
+                    </div>
+
+                    {/* Interactive Input Buttons (Menu Options) */}
+                    <div className="p-4 bg-[#080808] grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <button
+                            onClick={handleEmail}
+                            className="flex items-center justify-between p-3.5 bg-zinc-950 hover:bg-zinc-900 border border-white/5 hover:border-red-500/20 text-zinc-300 hover:text-white rounded-lg transition-all text-left group"
+                        >
+                            <div className="flex items-center space-x-3">
+                                <Mail className="w-4 h-4 text-red-500/80 group-hover:text-red-500" />
+                                <span>cat contact_info.json</span>
+                            </div>
+                            {copied ? (
+                                <Check className="w-4 h-4 text-green-500" />
+                            ) : (
+                                <Copy className="w-4 h-4 text-zinc-600 group-hover:text-zinc-400" />
+                            )}
+                        </button>
+
+                        <button
+                            onClick={handleGithub}
+                            className="flex items-center justify-between p-3.5 bg-zinc-950 hover:bg-zinc-900 border border-white/5 hover:border-red-500/20 text-zinc-300 hover:text-white rounded-lg transition-all text-left group"
+                        >
+                            <div className="flex items-center space-x-3">
+                                <Github className="w-4 h-4 text-zinc-400 group-hover:text-white" />
+                                <span>curl -s github.manifest</span>
+                            </div>
+                            <ExternalLink className="w-4 h-4 text-zinc-600 group-hover:text-zinc-400" />
+                        </button>
+
+                        <button
+                            onClick={handleLinkedin}
+                            className="flex items-center justify-between p-3.5 bg-zinc-950 hover:bg-zinc-900 border border-white/5 hover:border-red-500/20 text-zinc-300 hover:text-white rounded-lg transition-all text-left group"
+                        >
+                            <div className="flex items-center space-x-3">
+                                <Linkedin className="w-4 h-4 text-blue-500/80 group-hover:text-blue-500" />
+                                <span>ssh linkedin_profile</span>
+                            </div>
+                            <ExternalLink className="w-4 h-4 text-zinc-600 group-hover:text-zinc-400" />
+                        </button>
+
+                        <button
+                            onClick={handleClear}
+                            className="flex items-center justify-between p-3.5 bg-zinc-950 hover:bg-zinc-900 border border-white/5 hover:border-red-500/20 text-zinc-500 hover:text-zinc-300 rounded-lg transition-all text-left group"
+                        >
+                            <div className="flex items-center space-x-3">
+                                <Terminal className="w-4 h-4" />
+                                <span>clear console</span>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+
+                {/* Footer Signature */}
+                <div className="text-center">
+                    <p className="text-zinc-700 font-mono text-xs tracking-wider">
+                        // HAND-CRAFTED BY AKASH KUMAR
+                    </p>
+                </div>
             </div>
-        </div>
+        </section>
     );
 }
