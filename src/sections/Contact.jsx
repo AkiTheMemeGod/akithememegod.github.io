@@ -1,13 +1,17 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import { Terminal, Github, Linkedin, Mail, ExternalLink, Check, Copy } from 'lucide-react';
 
+const bootScript = [
+    { type: 'system', text: 'Initializing secure connection protocol...' },
+    { type: 'system', text: 'Connected to gateway: akash.dev [AES-256-GCM]' },
+    { type: 'command', text: './load_contact_menu.sh' },
+    { type: 'output', text: 'Available commands loaded. Select a target below to execute:' },
+];
+
 export function Contact() {
-    const [history, setHistory] = useState([
-        { type: 'system', text: 'Initializing secure connection protocol...' },
-        { type: 'system', text: 'Connected to gateway: akash.dev [AES-256-GCM]' },
-        { type: 'command', text: './load_contact_menu.sh' },
-        { type: 'output', text: 'Available commands loaded. Select a target below to execute:' }
-    ]);
+    const [history, setHistory] = useState([]);
+    const [bootStep, setBootStep] = useState(0);
     const [copied, setCopied] = useState(false);
     const terminalEndRef = useRef(null);
 
@@ -17,6 +21,18 @@ export function Contact() {
     useEffect(() => {
         terminalEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, [history]);
+
+    useEffect(() => {
+        if (bootStep >= bootScript.length) {
+            return undefined;
+        }
+
+        const timer = window.setTimeout(() => {
+            setBootStep((current) => current + 1);
+        }, 230);
+
+        return () => window.clearTimeout(timer);
+    }, [bootStep]);
 
     const addLog = (command, outputs) => {
         setHistory(prev => [
@@ -32,7 +48,7 @@ export function Contact() {
         addLog('cat contact_info.json', [
             '{',
             `  "email": "${email}",`,
-            '  "location": "Bengaluru, India",',
+            '  "location": "TamilNadu, India",',
             '  "status": "Active / Accepting selective roles"',
             '}',
             '>> SUCCESS: Email copied to clipboard.'
@@ -70,7 +86,7 @@ export function Contact() {
     return (
         <section 
             id="contact" 
-            className="relative min-h-screen w-full flex items-center justify-center bg-black px-6 py-32"
+            className="page-scene relative min-h-[100dvh] w-full flex items-center justify-center bg-black px-6 py-32"
         >
             <div className="w-full max-w-3xl z-10 flex flex-col space-y-12">
                 {/* Header */}
@@ -106,6 +122,29 @@ export function Contact() {
 
                     {/* Terminal Logs Body */}
                     <div className="p-6 space-y-3 h-64 overflow-y-auto border-b border-white/5 scrollbar-thin scrollbar-thumb-zinc-800">
+                        {bootScript.slice(0, bootStep).map((log, idx) => (
+                            <motion.div
+                                key={`boot-${idx}`}
+                                initial={{ opacity: 0, y: 8 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+                                className="leading-relaxed"
+                            >
+                                {log.type === 'system' && (
+                                    <span className="text-zinc-500">[* {log.text}]</span>
+                                )}
+                                {log.type === 'command' && (
+                                    <span className="boot-cursor">
+                                        <span className="text-red-500">guest@akash.dev:~$</span>{' '}
+                                        <span className="text-white">{log.text}</span>
+                                    </span>
+                                )}
+                                {log.type === 'output' && (
+                                    <span className="text-zinc-400 whitespace-pre-wrap">{log.text}</span>
+                                )}
+                            </motion.div>
+                        ))}
+
                         {history.map((log, idx) => (
                             <div key={idx} className="leading-relaxed">
                                 {log.type === 'system' && (

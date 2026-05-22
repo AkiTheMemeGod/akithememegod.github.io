@@ -6,6 +6,7 @@ import { Navbar } from './components/layout/Navbar';
 import { Home } from './pages/Home';
 import { BlogIndex } from './pages/BlogIndex';
 import { BlogPost } from './pages/BlogPost';
+import { Resume } from './pages/Resume';
 
 function App() {
   const location = useLocation();
@@ -53,11 +54,12 @@ function App() {
       <Navbar />
 
       <main className="relative z-10 w-full">
-        <AnimatePresence mode="wait">
-          <Routes location={location} key={location.pathname}>
+        <AnimatePresence mode="wait" initial={false}>
+          <Routes location={location} key={`${location.pathname}${location.search}`}>
             <Route path="/" element={<Home />} />
             <Route path="/blog" element={<BlogIndex />} />
             <Route path="/blog/:slug" element={<BlogPost />} />
+            <Route path="/resume" element={<Resume />} />
           </Routes>
         </AnimatePresence>
       </main>

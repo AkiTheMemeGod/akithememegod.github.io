@@ -24,13 +24,18 @@ export function Home() {
     }, [hash]);
 
     return (
-        <div className="relative z-10 w-full bg-black">
+        <div className="page-scene relative z-10 w-full bg-black">
             {/* Sections need IDs for hash linking to work */}
             <section id="hero"><Hero /></section>
+            <div className="scene-divider my-16 opacity-70" />
             <section id="about"><About /></section>
+            <div className="scene-divider my-16 opacity-70" />
             <section id="skills"><Skills /></section>
+            <div className="scene-divider my-16 opacity-70" />
             <section id="work"><Projects /></section>
+            <div className="scene-divider my-16 opacity-70" />
             <section id="experience"><Experience /></section>
+            <div className="scene-divider my-16 opacity-70" />
             <section id="contact"><Contact /></section>
 
             {/* Background Elements (Parallax) specific to Home */}
