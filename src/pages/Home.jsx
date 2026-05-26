@@ -9,10 +9,21 @@ import { Contact } from '../sections/Contact';
 
 export function Home() {
     const { hash } = useLocation();
+    const isMounted = React.useRef(false);
 
     useEffect(() => {
-        if (hash) {
-            // Small timeout to allow render to complete
+        if (!isMounted.current) {
+            isMounted.current = true;
+            if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+            // Remove stale hash so browser doesn't do a native anchor jump
+            if (window.location.hash && window.location.hash !== '#hero') {
+                history.replaceState(null, '', window.location.pathname);
+            }
+            window.scrollTo({ top: 0, behavior: 'instant' });
+            return;
+        }
+        // Subsequent hash changes (user clicking nav links)
+        if (hash && hash !== '#hero') {
             setTimeout(() => {
                 const id = hash.replace('#', '');
                 const elem = document.getElementById(id);

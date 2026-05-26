@@ -1,6 +1,172 @@
-import React, { useRef } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { Github, Linkedin, ArrowDown } from 'lucide-react';
+import { ArrowDown, Github, Linkedin } from 'lucide-react';
+
+function SocialButton({ href, icon: Icon, label, delay = 0 }) {
+    const [hovered, setHovered] = useState(false);
+    return (
+        <motion.a
+            href={href}
+            target="_blank"
+            rel="noopener noreferrer"
+            initial={{ opacity: 0, x: -24 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            onMouseEnter={() => setHovered(true)}
+            onMouseLeave={() => setHovered(false)}
+            className="relative flex items-center gap-3 overflow-hidden border border-white/15 px-5 py-4 w-[160px] md:w-[180px] group cursor-pointer"
+            style={{ background: 'transparent' }}
+        >
+            {/* fill wipe from bottom */}
+            <motion.span
+                className="absolute inset-0 bg-white pointer-events-none"
+                initial={{ scaleY: 0 }}
+                animate={{ scaleY: hovered ? 1 : 0 }}
+                transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+                style={{ originY: '100%' }}
+            />
+            {/* icon */}
+            <motion.span
+                animate={{ y: hovered ? -2 : 0, color: hovered ? '#000' : 'rgba(255,255,255,0.7)' }}
+                transition={{ duration: 0.25 }}
+                className="relative z-10"
+            >
+                <Icon className="w-5 h-5" strokeWidth={1.5} />
+            </motion.span>
+            {/* label */}
+            <motion.span
+                animate={{ x: hovered ? 2 : 0, color: hovered ? '#000' : 'rgba(255,255,255,0.55)' }}
+                transition={{ duration: 0.25 }}
+                className="relative z-10 font-mono text-[11px] uppercase tracking-[0.25em]"
+            >
+                {label}
+            </motion.span>
+            {/* arrow hint */}
+            <motion.span
+                animate={{ x: hovered ? 0 : -6, opacity: hovered ? 1 : 0, color: '#000' }}
+                transition={{ duration: 0.25 }}
+                className="relative z-10 ml-auto font-mono text-[10px]"
+            >
+                ↗
+            </motion.span>
+        </motion.a>
+    );
+}
+
+function useCountUp(target, duration = 1400, delay = 0) {
+    const [count, setCount] = useState(0);
+    useEffect(() => {
+        let start = null;
+        let raf;
+        const timeout = setTimeout(() => {
+            const step = (ts) => {
+                if (!start) start = ts;
+                const progress = Math.min((ts - start) / duration, 1);
+                const ease = 1 - Math.pow(1 - progress, 3);
+                setCount(Math.floor(ease * target));
+                if (progress < 1) raf = requestAnimationFrame(step);
+                else setCount(target);
+            };
+            raf = requestAnimationFrame(step);
+        }, delay);
+        return () => { clearTimeout(timeout); cancelAnimationFrame(raf); };
+    }, [target, duration, delay]);
+    return count;
+}
+
+function InfoPanel() {
+    const years  = useCountUp(3, 1200, 800);
+    const projects = useCountUp(20, 1400, 1000);
+    const [linesIn, setLinesIn] = useState(false);
+
+    useEffect(() => {
+        const t = setTimeout(() => setLinesIn(true), 400);
+        return () => clearTimeout(t);
+    }, []);
+
+    return (
+        <div className="flex flex-col gap-0 select-none">
+
+            {/* Role block — big stacked text */}
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+                className="mb-6"
+            >
+                <p className="font-mono text-[9px] tracking-[0.4em] text-white/30 uppercase mb-2">Discipline</p>
+                <div className="flex flex-col gap-1">
+                    {['Full-Stack', 'Engineer &', 'Secure Systems'].map((word, i) => (
+                        <motion.span
+                            key={word}
+                            initial={{ opacity: 0, x: 30 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: 0.6 + i * 0.12, duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+                            className="text-white font-bold leading-[1] tracking-tight"
+                            style={{ fontSize: 'clamp(1.6rem, 3.2vw, 2.4rem)' }}
+                        >
+                            {word}
+                        </motion.span>
+                    ))}
+                </div>
+            </motion.div>
+
+            {/* Diagonal rule */}
+            <motion.div
+                initial={{ scaleX: 0 }}
+                animate={{ scaleX: 1 }}
+                transition={{ delay: 1.0, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                className="origin-left h-px bg-gradient-to-r from-white/50 via-white/20 to-transparent mb-6"
+            />
+
+            {/* Stats row */}
+            <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 1.1, duration: 0.5 }}
+                className="grid grid-cols-2 gap-4 mb-6"
+            >
+                <div className="flex flex-col">
+                    <span className="font-mono text-[9px] tracking-[0.3em] text-white/30 uppercase mb-1">Exp</span>
+                    <span className="font-bold text-white leading-none" style={{ fontSize: 'clamp(2rem, 4vw, 3rem)' }}>
+                        {years}<span className="text-white/40 text-base font-light">yr</span>
+                    </span>
+                </div>
+                <div className="flex flex-col">
+                    <span className="font-mono text-[9px] tracking-[0.3em] text-white/30 uppercase mb-1">Projects</span>
+                    <span className="font-bold text-white leading-none" style={{ fontSize: 'clamp(2rem, 4vw, 3rem)' }}>
+                        {projects}<span className="text-white/40 text-base font-light">+</span>
+                    </span>
+                </div>
+            </motion.div>
+
+            {/* Stack tags — horizontal flowing */}
+            <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 1.25, duration: 0.5 }}
+                className="flex flex-wrap gap-1.5 mb-6"
+            >
+                {['Backend', 'Distributed', 'Containers', 'Local AI'].map((tag) => (
+                    <span key={tag} className="font-mono text-[9px] uppercase tracking-[0.2em] text-white/50 border border-white/10 px-2 py-1 hover:border-white/30 hover:text-white/80 transition-all duration-200">
+                        {tag}
+                    </span>
+                ))}
+            </motion.div>
+
+            {/* Status dot */}
+            <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 1.4, duration: 0.5 }}
+                className="flex items-center gap-2 pt-3 border-t border-white/10"
+            >
+                <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse shadow-[0_0_6px_rgba(255,255,255,0.8)]" />
+                <span className="font-mono text-[9px] uppercase tracking-[0.25em] text-white/40">Available</span>
+            </motion.div>
+        </div>
+    );
+}
 
 export function Hero() {
     const containerRef = useRef(null);
@@ -55,99 +221,72 @@ export function Hero() {
     return (
         <section 
             ref={containerRef} 
-            className="page-scene relative min-h-[100dvh] w-full flex items-center justify-between overflow-hidden bg-black px-6 md:px-20"
+            className="page-scene relative min-h-[100dvh] w-full flex items-center justify-center overflow-hidden bg-black"
         >
             <div className="absolute inset-0 pointer-events-none z-0">
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_22%_28%,rgba(255,255,255,0.16),transparent_28%),radial-gradient(circle_at_78%_58%,rgba(255,255,255,0.09),transparent_30%),linear-gradient(90deg,rgba(0,0,0,0.92)_0%,rgba(0,0,0,0.72)_44%,rgba(0,0,0,0.88)_100%)]" />
+                <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_50%,rgba(255,255,255,0.07),transparent_70%),linear-gradient(180deg,rgba(0,0,0,0.55)_0%,rgba(0,0,0,0.1)_40%,rgba(0,0,0,0.55)_100%)]" />
                 <div className="absolute inset-0 bg-grid opacity-[0.28]" />
             </div>
 
-            <div className="absolute top-0 left-0 h-full w-full md:w-[56%] z-10 pointer-events-none">
-                <motion.div 
-                    initial={{ clipPath: "polygon(0 100%, 100% 100%, 100% 100%, 0 100%)", opacity: 0 }}
-                    animate={{ clipPath: "polygon(0 0%, 100% 0%, 100% 100%, 0 100%)", opacity: 1 }}
-                    transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
-                    className="relative w-full h-full overflow-hidden"
-                >
-                    <motion.img
-                        style={{ y: imageY, scale: imageScale }}
-                        src="/me.png"
-                        alt="Akash K."
-                        className="w-full h-full object-cover object-center md:object-[right_center] grayscale contrast-[1.4] brightness-[1.08] saturate-0"
-                    />
-
-                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.08),transparent_52%),linear-gradient(90deg,rgba(255,255,255,0.06),transparent_18%,transparent_72%,rgba(0,0,0,0.72))]" />
-                    <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.08)_0%,rgba(0,0,0,0.14)_100%)]" />
-                </motion.div>
-            </div>
-
-            {/* Content Side (Right) */}
-            <motion.div 
+            {/* Name behind the image — z-10 */}
+            <motion.div
                 style={{ y: textY, opacity: textOpacity }}
-                variants={containerVariants}
                 initial="hidden"
                 animate="visible"
-                className="relative z-20 ml-auto flex max-w-4xl flex-col items-end pt-20 text-right"
+                className="absolute inset-0 z-10 flex items-end justify-center pointer-events-none pb-[38%] md:pb-[34%] lg:pb-[36%]"
             >
-                <motion.div 
-                    variants={elementVariants}
-                    className="mb-2 flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.25em] text-white/65"
-                >
-                    <span className="h-1.5 w-1.5 rounded-full bg-white shadow-[0_0_18px_rgba(255,255,255,0.6)] animate-pulse" />
-                    NODE // AK.SYS.ONLINE
-                </motion.div>
-
                 <div className="overflow-hidden py-2">
-                    <motion.h1 
+                    <motion.h1
                         variants={titleVariants}
-                        className="bg-gradient-to-b from-white via-zinc-100 to-zinc-500 bg-clip-text text-[4.5rem] font-bold leading-[0.85] tracking-tighter text-transparent sm:text-[7rem] md:text-[11rem] lg:text-[13rem]"
+                        className="text-white text-[6rem] font-bold leading-[0.85] tracking-tighter sm:text-[10rem] md:text-[15rem] lg:text-[18rem]"
                     >
                         Akash K.
                     </motion.h1>
                 </div>
+            </motion.div>
 
-                <motion.div 
-                    variants={elementVariants}
-                    className="mt-6 space-y-5 border-r border-white/15 pr-4 md:mt-8"
+            {/* Photo with transparent bg — z-20 */}
+            <div className="absolute top-0 left-0 h-full w-full z-20 pointer-events-none">
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
+                    className="relative w-full h-full"
                 >
-                    <div className="space-y-3">
-                        <h2 className="font-mono text-lg font-medium tracking-wider text-white md:text-xl">
-                            FULL-STACK ENGINEER & SECURE SYSTEMS DEVELOPER
-                        </h2>
-                        <p className="ml-auto max-w-md text-xs font-light leading-relaxed tracking-wide text-zinc-300 md:text-sm">
-                            Building resilient backend services, distributed systems, and modern frontends. Specializing in container orchestrations, containerized web servers, and local AI solutions.
-                        </p>
-                    </div>
-
-                    <div className="flex items-center justify-end gap-5 pt-1">
-                        <a
-                            href="https://github.com/AkiTheMemeGod"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-zinc-400 transition-colors duration-300 hover:scale-105 hover:text-white"
-                            aria-label="GitHub"
-                        >
-                            <Github className="w-5 h-5" />
-                        </a>
-                        <a
-                            href="https://www.linkedin.com/in/akash-k19052022/"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-zinc-400 transition-colors duration-300 hover:scale-105 hover:text-white"
-                            aria-label="LinkedIn"
-                        >
-                            <Linkedin className="w-5 h-5" />
-                        </a>
-                    </div>
+                    <motion.img
+                        style={{ y: imageY, scale: imageScale }}
+                        src="/me_nobg.png"
+                        alt="Akash K."
+                        className="w-full h-full object-contain object-bottom grayscale contrast-[1.15] brightness-[1.1] saturate-0"
+                    />
                 </motion.div>
+            </div>
 
+            {/* Social buttons — left edge, z-30 */}
+            <motion.div
+                style={{ y: textY, opacity: textOpacity }}
+                className="absolute left-8 md:left-14 top-1/2 -translate-y-1/2 z-30 flex flex-col gap-3 pointer-events-auto"
+            >
+                <SocialButton href="https://github.com/AkiTheMemeGod" icon={Github} label="GitHub" delay={1.0} />
+                <SocialButton href="https://www.linkedin.com/in/akash-k19052022/" icon={Linkedin} label="LinkedIn" delay={1.15} />
+            </motion.div>
+
+            {/* Info panel — z-30 */}
+            <motion.div
+                style={{ y: textY, opacity: textOpacity }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.3, duration: 0.6 }}
+                className="absolute right-8 md:right-14 top-1/2 -translate-y-1/2 z-30 w-[200px] md:w-[260px] pointer-events-auto"
+            >
+                <InfoPanel />
             </motion.div>
 
             <motion.div 
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 1.2, duration: 0.8 }}
-                className="absolute bottom-10 right-10 flex items-center gap-3 z-20 flex-row-reverse"
+                className="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-3 z-40 flex-col"
             >
                 <motion.div className="flex h-8 w-8 items-center justify-center rounded-full border border-white/10 bg-white/5 backdrop-blur">
                     <ArrowDown className="h-3.5 w-3.5 text-white/70" />

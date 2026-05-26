@@ -38,8 +38,23 @@ function App() {
     };
   }, []);
 
+  const isFirstRender = useRef(true);
+
   // Scroll to top on route change (unless hash is present)
   useEffect(() => {
+    // On the very first render, always go to top regardless of hash
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      if (location.hash && location.hash !== '#hero') {
+        window.history.replaceState(null, '', window.location.pathname);
+      }
+      if (lenisRef.current) {
+        lenisRef.current.scrollTo(0, { immediate: true });
+      } else {
+        window.scrollTo(0, 0);
+      }
+      return;
+    }
     if (!location.hash) {
       if (lenisRef.current) {
         lenisRef.current.scrollTo(0, { immediate: true });

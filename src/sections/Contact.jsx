@@ -13,14 +13,20 @@ export function Contact() {
     const [history, setHistory] = useState([]);
     const [bootStep, setBootStep] = useState(0);
     const [copied, setCopied] = useState(false);
-    const terminalEndRef = useRef(null);
+    const terminalBodyRef = useRef(null);
 
     const email = 'k.akashkumar@gmail.com';
 
-    // Auto-scroll terminal to bottom when history changes
+    // Auto-scroll terminal body (not the page) to bottom when history changes
     useEffect(() => {
-        terminalEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-    }, [history]);
+        if (history.length > 0 || bootStep > 0) {
+            const el = terminalBodyRef.current;
+            if (el) {
+                el.scrollTop = el.scrollHeight;
+            }
+        }
+    }, [history, bootStep]);
+    
 
     useEffect(() => {
         if (bootStep >= bootScript.length) {
@@ -121,7 +127,7 @@ export function Contact() {
                     </div>
 
                     {/* Terminal Logs Body */}
-                    <div className="p-6 space-y-3 h-64 overflow-y-auto border-b border-white/5 scrollbar-thin scrollbar-thumb-zinc-800">
+                    <div ref={terminalBodyRef} className="p-6 space-y-3 h-64 overflow-y-auto border-b border-white/5 scrollbar-thin scrollbar-thumb-zinc-800">
                         {bootScript.slice(0, bootStep).map((log, idx) => (
                             <motion.div
                                 key={`boot-${idx}`}
@@ -161,7 +167,6 @@ export function Contact() {
                                 )}
                             </div>
                         ))}
-                        <div ref={terminalEndRef} />
                     </div>
 
                     {/* Interactive Input Buttons (Menu Options) */}

@@ -26,6 +26,11 @@
       }
     }(window.location))
   </script>
+  <script>
+    // Always start at the top — prevent browser from jumping to stale hash on reload
+    if (history.scrollRestoration) history.scrollRestoration = 'manual';
+    window.scrollTo(0, 0);
+  </script>
 </head>
 
 <body>
