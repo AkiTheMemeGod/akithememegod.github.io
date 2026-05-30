@@ -256,7 +256,9 @@ export function Hero() {
                     <motion.img
                         style={{ y: imageY, scale: imageScale }}
                         src="/me_nobg.png"
-                        alt="Akash K."
+                        alt="Akash K. - Full-Stack Engineer and Secure Systems Specialist with 3+ years experience"
+                        loading="eager"
+                        decoding="async"
                         className="w-full h-full object-contain object-bottom grayscale contrast-[1.15] brightness-[1.1] saturate-0"
                     />
                 </motion.div>

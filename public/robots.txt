@@ -1,0 +1,56 @@
+# robots.txt for akithememegod.github.io
+# https://akithememegod.github.io/robots.txt
+
+User-agent: *
+
+# Allow all content
+Allow: /
+Allow: /src/
+Allow: /public/
+
+# Crawl-delay to be respectful (optional, not supported by Google but useful for others)
+Crawl-delay: 1
+
+# Sitemap location
+Sitemap: https://akithememegod.github.io/sitemap.xml
+
+# Host directive (helps search engines know preferred domain)
+Host: akithememegod.github.io
+
+# Common bots - explicit allow (best practice)
+User-agent: Googlebot
+Allow: /
+
+User-agent: Googlebot-Image
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Slurp
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
+
+User-agent: Baiduspider
+Allow: /
+
+# AI Crawlers (allow for AI search engines)
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: GPTBot
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
