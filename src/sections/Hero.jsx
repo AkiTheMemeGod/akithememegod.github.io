@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { ArrowDown, Github, Linkedin } from 'lucide-react';
+import { ArrowDown, Github, Glasses, Linkedin } from 'lucide-react';
 
 function SocialButton({ href, icon: Icon, label, delay = 0 }) {
     const [hovered, setHovered] = useState(false);
@@ -271,6 +271,7 @@ export function Hero() {
             >
                 <SocialButton href="https://github.com/AkiTheMemeGod" icon={Github} label="GitHub" delay={1.0} />
                 <SocialButton href="https://www.linkedin.com/in/akash-k19052022/" icon={Linkedin} label="LinkedIn" delay={1.15} />
+                <SocialButton href="https://bytheseus.me" icon={Glasses} label="Projects" delay={1.30} />
             </motion.div>
 
             {/* Info panel — z-30 */}

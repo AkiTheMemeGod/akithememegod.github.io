@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { ArrowUpRight, Cpu, Shield, Brain, Database } from 'lucide-react';
+import { ArrowUpRight, Cpu, Shield, Brain, Database, Glasses } from 'lucide-react';
 
 const projects = [
     {
@@ -46,6 +46,17 @@ const projects = [
         accent: 'text-emerald-400',
         border: 'hover:border-emerald-500/25',
         link: 'https://protobase.pythonanywhere.com',
+    },
+    {
+        title: 'All Projects',
+        category: 'Portfolio',
+        icon: Glasses,
+        description: 'A Whole showcase website for all my projects',
+        tags: ['Next.js', 'JavaScript', 'Tailwind'],
+        color: 'from-white-500/10 via-zinc-950 to-zinc-950',
+        accent: 'text-white-400',
+        border: 'hover:border-white-500/25',
+        link: 'https://bytheseus.me',
     }
 ];
 
